@@ -1,0 +1,94 @@
+ENSE707 Week 11 Lab - Defect Log
+Project: Week11DefectLifeCycle (OrderService)
+=====================================================================
+
+---------------------------------------------------------------------
+Defect ID: D-001
+Title: Discount calculation subtracts discount value instead of percentage
+Description: The ApplyDiscount method subtracts discountPercent directly from the price (price - discountPercent) instead of calculating the percentage discount (price - price * discountPercent / 100). A 20% discount on a $200 order therefore removes $20 instead of $40.
+Steps to Reproduce:
+1. Create an OrderService object.
+2. Call ApplyDiscount(200, 20).
+Expected Result: 160
+Actual Result: 180
+Severity: High
+Priority: High
+Status: Closed
+Owner: Developer
+Evidence: MSTest failed in Test Explorer. Expected result did not match actual result. (Failing test: D001_ApplyDiscount_WhenPriceIs200AndDiscountIs20_Returns160 - Expected: 160, Actual: 180.)
+Resolution Notes: Production code updated. Discount percentage formula and free shipping boundary condition corrected. ApplyDiscount now returns price - (price * discountPercent / 100) and rejects invalid inputs (negative price, discount < 0 or > 100) with ArgumentException.
+Retest Result: Passed. Original defect is no longer reproducible. (Retest method: D001_ApplyDiscount_WhenPriceIs200AndDiscountIs20_Returns160 - PASSED)
+Final Status: Closed
+
+Status history (life cycle):
+  New -> Assigned -> Open / In Progress -> Fixed -> Pending Retest -> Verified -> Closed
+
+---------------------------------------------------------------------
+Defect ID: D-002
+Title: Free shipping is not applied when discounted total is exactly $100
+Description: The IsEligibleForFreeShipping method uses greater than 100 instead of greater than or equal to 100. Business Rule 3 says free shipping applies when the discounted order total is $100 or more.
+Steps to Reproduce:
+1. Create an OrderService object.
+2. Call IsEligibleForFreeShipping(100).
+Expected Result: true
+Actual Result: false
+Severity: Medium
+Priority: High
+Status: Closed
+Owner: Developer
+Evidence: MSTest failed in Test Explorer. Expected result did not match actual result. (Failing test: D002_IsEligibleForFreeShipping_WhenOrderTotalIs100_ReturnsTrue - Expected: True, Actual: False.)
+Resolution Notes: Production code updated. Discount percentage formula and free shipping boundary condition corrected. IsEligibleForFreeShipping now returns orderTotal >= 100.
+Retest Result: Passed after fix was restored. (Retest method: D002_IsEligibleForFreeShipping_WhenOrderTotalIs100_ReturnsTrue - PASSED)
+Final Status: Closed
+
+Status history (life cycle):
+  New -> Assigned -> Open / In Progress -> Fixed -> Pending Retest -> Verified -> Closed
+  -> Reopened (incomplete-fix simulation, Part 9) -> Verified -> Closed
+
+Reopen record (Part 9):
+  Status: Reopened
+  Retest Result: Failed. Free shipping still not applied when order total is exactly $100.
+  Final Status: Reopened
+  (Cause: the method was temporarily reverted to "orderTotal > 100". Test D002_IsEligibleForFreeShipping_WhenOrderTotalIs100_ReturnsTrue FAILED.)
+  Restored fix: "orderTotal >= 100". All tests re-run and passed.
+  Status: Verified
+  Retest Result: Passed after fix was restored.
+  Final Status: Closed
+
+=====================================================================
+STATE OF THE DEFECTS AT EACH STEP OF THE LAB (what to type in at each point)
+=====================================================================
+Part 3 (3.2 / 3.3)  Both:  Status: New        Owner: Unassigned   Evidence: To be confirmed by MSTest.   Resolution Notes: Not fixed yet.   Retest Result: Not retested.   Final Status: New
+Part 4 (4.3)        Both:  Status: Assigned   Owner: Developer
+Part 5 (5.3)        Both:  Status: Open / In Progress   Owner: Developer
+                           Evidence: MSTest failed in Test Explorer. Expected result did not match actual result.
+Part 7 (7.1)        Both:  Status: Open / In Progress
+                           Resolution Notes: Developer is updating discount calculation and free shipping boundary logic.
+Part 7 (7.3)        Both:  Status: Fixed
+                           Resolution Notes: Production code updated. Discount percentage formula and free shipping boundary condition corrected.
+Part 8 (8.2)        Both:  Status: Pending Retest
+                           then  Retest Result: Passed. Original defect is no longer reproducible.   Status: Verified
+Part 8 (8.3)        Both:  Final Status: Closed
+Part 9 (9.2)        D-002: Status: Reopened   Retest Result: Failed. Free shipping still not applied when order total is exactly $100.   Final Status: Reopened
+Part 9 (9.3)        D-002: Status: Verified   Retest Result: Passed after fix was restored.   Final Status: Closed
+
+=====================================================================
+Required Evidence Summary (Part 8)
+=====================================================================
+Defect | MSTest method used for retesting                                          | Result | Final Status
+D-001  | D001_ApplyDiscount_WhenPriceIs200AndDiscountIs20_Returns160               | Passed | Closed
+D-002  | D002_IsEligibleForFreeShipping_WhenOrderTotalIs100_ReturnsTrue            | Passed | Closed
+
+Test results by stage (expected, based on the code logic):
+  Part 5.2 (defective code, 2 tests):          D001 FAIL, D002 FAIL                       -> 0 passed, 2 failed
+  Part 6.3 (defective code, 6 tests):          D001 FAIL, D002 FAIL,
+                                               CalculateFinalTotal_...Eligible... FAIL (190 vs 180),
+                                               CalculateFinalTotal_...NotEligible... FAIL (85 vs 87),
+                                               ApplyDiscount_...Zero... PASS, ApplyDiscount_...OneHundred... PASS
+                                                                                          -> 2 passed, 4 failed
+  Part 8.1 (fixed code, 6 tests):              all PASS
+  Part 9.1 (D-002 reverted, 6 tests):          only D002 FAIL                             -> 5 passed, 1 failed
+  Part 9.3 (fix restored):                     all PASS
+  Part 10.2 (fixed code, 10 tests):            all PASS
+
+Regression Evidence: Boundary and invalid input regression tests passed. Related discount, shipping, and final total behaviours are protected by automated tests.
