@@ -1,0 +1,39 @@
+CopilotReview.txt - Activity 4.2: Evaluate Copilot Suggestions
+=====================================================================
+NOTE: These answers are a draft prepared in advance. Before you submit,
+run the Activity 4.1 prompt in GitHub Copilot Chat and edit each answer
+below so it matches what Copilot ACTUALLY produced in your session.
+=====================================================================
+
+Prompt used (Activity 4.1):
+"Review this defect report. Identify missing information needed for a developer to reproduce the issue. Suggest a clearer title, reproduction steps, expected result, actual result, severity, and priority."
+
+1. What useful improvements did Copilot suggest?
+   - Make the title more specific by naming the method and the inputs, e.g. "ApplyDiscount(200, 20) returns 180 instead of 160".
+   - Add environment details (.NET version, MSTest version, build configuration) and the code location (OrderService.cs, ApplyDiscount).
+   - Make the reproduction steps exact, including the data type (decimal: 200m, 20m).
+   - Add the business rule being violated (Rule 2 for D-001, Rule 3 for D-002) so the expected result is traceable.
+   - Reference the failing MSTest method as evidence instead of "To be confirmed".
+   - Add a suggested fix or likely cause (percentage formula; > vs >=) in the description.
+
+2. Did Copilot invent any details that were not provided?
+   - Typical examples to check for: made-up build numbers, OS or browser details, screenshots or log output that do not exist, a reporter name or date, or a claim that the defect was seen in production or by a named customer.
+   - Anything of this kind that appears in your Copilot output was not in the lab material and must be marked as invented. [Edit: list the specific items Copilot invented in your session, or write "None noticed" if that is true.]
+
+3. Did Copilot suggest appropriate severity and priority?
+   - D-001 High / High is appropriate: customers are charged the wrong amount on every discounted order (financial impact, core feature).
+   - D-002 Medium severity / High priority is appropriate: it affects only the exact $100 boundary (narrow scope) but is a clear rule violation that should be fixed soon.
+   - If Copilot suggested Critical for D-001 or Low for D-002, note it here. Severity (technical/business impact) and priority (fix order) are a team decision, so Copilot's values are only a suggestion. [Edit to match what Copilot gave you.]
+
+4. Which Copilot suggestions did you accept?
+   - A more specific title for each defect.
+   - The explicit reproduction steps with decimal literals.
+   - Linking each defect to the business rule it violates.
+   - Naming the MSTest method as evidence.
+
+5. Which Copilot suggestions did you reject and why?
+   - Any invented environment details, build numbers, screenshots or log lines: they are not facts from this lab, and a defect report must contain only verified information.
+   - Any change of severity/priority not justified by the business rules in the lab (for example, raising D-002 to Critical for a single boundary value).
+   - Any root cause or fix stated as certain before the code and tests had confirmed it.
+
+Conclusion: Copilot is useful for improving wording and completeness, but a human must verify every fact, severity and priority before it goes in the defect log.
