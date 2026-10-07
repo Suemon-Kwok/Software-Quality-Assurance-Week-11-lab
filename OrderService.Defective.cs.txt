@@ -1,0 +1,28 @@
+// REFERENCE ONLY (Part 2.1 original defective code) - not compiled.
+namespace Week11DefectLifeCycle.Core
+{
+    public class OrderService
+    {
+        public decimal ApplyDiscount(decimal price, decimal discountPercent)
+        {
+            return price - discountPercent;          // D-001
+        }
+
+        public bool IsEligibleForFreeShipping(decimal orderTotal)
+        {
+            return orderTotal > 100;                 // D-002
+        }
+
+        public decimal CalculateFinalTotal(decimal price, decimal discountPercent, decimal shippingCost)
+        {
+            var discountedPrice = ApplyDiscount(price, discountPercent);
+
+            if (IsEligibleForFreeShipping(discountedPrice))
+            {
+                shippingCost = 0;
+            }
+
+            return discountedPrice + shippingCost;
+        }
+    }
+}
