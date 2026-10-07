@@ -1,0 +1,33 @@
+DefectLifeCycleReflection.txt - ENSE707 Week 11 Lab
+
+1. What were the two main defects discovered in this lab?
+D-001: ApplyDiscount subtracted the discount value from the price (price - discountPercent) instead of applying a percentage, so a 20% discount on $200 returned $180 instead of $160.
+D-002: IsEligibleForFreeShipping used "orderTotal > 100" instead of "orderTotal >= 100", so free shipping was not applied when the discounted total was exactly $100.
+(Missing validation for negative prices, discounts outside 0-100 and negative shipping costs, Rule 4, was also found and fixed, and then protected by the Part 10 tests.)
+
+2. What status did each defect start with?
+Both started as New (Owner: Unassigned), then moved to Assigned, Open / In Progress, Fixed, Pending Retest, Verified and finally Closed. D-002 was also Reopened once in Part 9.
+
+3. What is the difference between Fixed and Closed?
+Fixed means the developer has changed the code and believes the defect is resolved; nobody else has confirmed it yet. Closed means the tester has retested, the fix was Verified, and the defect needs no further work. Fixed is the developer's claim; Closed is the QA-confirmed outcome.
+
+4. What is the difference between Retesting and Regression Testing?
+Retesting re-runs the exact test that exposed the defect (D001 and D002 tests) to confirm that the specific defect is gone. Regression testing re-runs the wider set of existing tests (zero discount, 100% discount, final total, invalid input) to confirm the fix did not break anything else.
+
+5. When should a defect be Reopened?
+When retesting after a fix (or later regression testing) shows the original problem still occurs or has come back. In this lab, D-002 was reopened when the method was reverted to "> 100" and the $100 test failed again. The report should record the failed retest result and the evidence.
+
+6. Why is severity different from priority?
+Severity is the technical or business impact of the defect (how bad it is). Priority is how soon it should be fixed (the order of work), which depends on business needs, risk and schedule. D-001 was High/High; D-002 was Medium severity (only the exact $100 boundary) but High priority (a clear rule violation that is quick to fix). A defect can be high severity but low priority, or the reverse.
+
+7. How did GitHub Copilot help with defect reports or test design?
+It suggested clearer titles, more exact reproduction steps, links to the business rules, and the MSTest method as evidence. For test design it suggested boundary tests (0%, 100%, 99.99, 100.01), invalid-input tests and final total tests. [Edit to match your actual Copilot session.]
+
+8. What Copilot suggestions required human review?
+Severity and priority values, any environment or build details it invented, claims about root cause or the fix before the tests confirmed them, expected values where the business rules are unclear (for example rounding, or a negative order total), and duplicate or low-value test ideas. The tester must check every suggestion against the stated business rules.
+
+9. How do automated tests support the defect life cycle?
+They provide objective evidence that a defect exists (a failing test), a repeatable retest after the fix (the same test now passes), and regression protection afterwards. They make the Verified and Closed decisions evidence-based, and they make a reopened defect obvious immediately, as in Part 9, where only the D002 test failed.
+
+10. How does this lab connect to Week 10 Root Cause Analysis and Defect Prevention?
+Week 10 asked why the defects happened; Week 11 tracks what happens to them once found. The root causes were a misunderstanding of the percentage rule (percentage treated as an amount), an off-by-one boundary error (> instead of >=) and missing input validation. Prevention actions include code review against the business rules, boundary-value tests written before or alongside the code, input validation, and keeping the regression tests in the suite so these defects cannot return unnoticed.
