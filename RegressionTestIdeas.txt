@@ -1,0 +1,58 @@
+RegressionTestIdeas.txt - Activity 6.2: Regression Test Ideas
+=====================================================================
+NOTE: Draft list prepared in advance. Run the Activity 6.1 prompt in
+GitHub Copilot Chat and replace or adjust the "Useful / Needs
+clarification / Not useful" ratings to match your real Copilot output.
+=====================================================================
+
+Test idea: ApplyDiscount_WhenDiscountIsZero_ReturnsOriginalPrice  (ApplyDiscount(100, 0) == 100)
+Purpose: Lower discount boundary - no discount leaves the price unchanged.
+Useful / Needs clarification / Not useful: Useful (added in Activity 6.3)
+
+Test idea: ApplyDiscount_WhenDiscountIsOneHundred_ReturnsZero  (ApplyDiscount(100, 100) == 0)
+Purpose: Upper discount boundary - a 100% discount gives a free order.
+Useful / Needs clarification / Not useful: Useful (added in Activity 6.3)
+
+Test idea: ApplyDiscount_WhenDiscountIsGreaterThan100_ThrowsArgumentException  (ApplyDiscount(100, 101))
+Purpose: Rule 4 - discounts over 100% are invalid.
+Useful / Needs clarification / Not useful: Useful (added in Activity 10.1)
+
+Test idea: ApplyDiscount_WhenPriceIsNegative_ThrowsArgumentException  (ApplyDiscount(-1, 10))
+Purpose: Rule 4 - negative prices are invalid.
+Useful / Needs clarification / Not useful: Useful (added in Activity 10.1)
+
+Test idea: IsEligibleForFreeShipping_WhenOrderTotalIs99Point99_ReturnsFalse  (IsEligibleForFreeShipping(99.99m) == false)
+Purpose: Just-below boundary for Rule 3, protects against the fix being too permissive.
+Useful / Needs clarification / Not useful: Useful (not yet added - good candidate for a future test)
+
+Test idea: IsEligibleForFreeShipping_WhenOrderTotalIs100Point01_ReturnsTrue  (IsEligibleForFreeShipping(100.01m) == true)
+Purpose: Just-above boundary for Rule 3, confirms values over $100 still qualify.
+Useful / Needs clarification / Not useful: Useful (not yet added)
+
+Test idea: CalculateFinalTotal_WhenDiscountedPriceIsExactly100_ReturnsTotalWithoutShipping  (CalculateFinalTotal(200, 50, 15) == 100)
+Purpose: Combines D-001 and D-002 end to end: a 50% discount on $200 gives exactly $100, so shipping must be free.
+Useful / Needs clarification / Not useful: Useful (not yet added)
+
+Test idea: CalculateFinalTotal_WhenDiscountedPriceIsEligibleForFreeShipping_ReturnsTotalWithoutShipping  (CalculateFinalTotal(200, 10, 15) == 180)
+Purpose: Final total with free shipping applied.
+Useful / Needs clarification / Not useful: Useful (added in Activity 6.3)
+
+Test idea: CalculateFinalTotal_WhenDiscountedPriceIsNotEligibleForFreeShipping_AddsShipping  (CalculateFinalTotal(80, 10, 15) == 87)
+Purpose: Final total when shipping is charged.
+Useful / Needs clarification / Not useful: Useful (added in Activity 6.3)
+
+Test idea: CalculateFinalTotal_WhenShippingCostIsNegative_ThrowsArgumentException  (CalculateFinalTotal(100, 10, -5))
+Purpose: Rule 4 - negative shipping cost is invalid.
+Useful / Needs clarification / Not useful: Useful (added in Activity 10.1)
+
+Test idea: ApplyDiscount_WhenResultHasMoreThanTwoDecimals_ReturnsRoundedAmount  (e.g. ApplyDiscount(99.99m, 15m))
+Purpose: Check currency rounding.
+Useful / Needs clarification / Not useful: Needs clarification - the business rules do not say whether results are rounded to cents, and the code does not round, so the expected value is undefined.
+
+Test idea: IsEligibleForFreeShipping_WhenOrderTotalIsNegative_ReturnsFalse  (IsEligibleForFreeShipping(-1))
+Purpose: Behaviour for a negative order total.
+Useful / Needs clarification / Not useful: Needs clarification - Rule 4 does not say whether this method should throw or return false.
+
+Test idea: Several near-identical tests for ApplyDiscount(200, 20) with different variable names
+Purpose: Repeat the D-001 check.
+Useful / Needs clarification / Not useful: Not useful - duplicates the existing D001 test and adds no new coverage.
